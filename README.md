@@ -25,6 +25,13 @@ Here’s a PlantUML diagram that represents the architecture of the service:
 ```plantuml
 @startuml
 !define RECTANGLE class
+
+struct "C++ Indexer"
+struct "C# Indexer"
+struct "Rust Indexer"
+struct "Swift Indexer"
+struct "Java Indexer"
+
 package "Indexer Service" {
     RECTANGLE IndexerService {
         + receive_compile_command(CompileCommand): CompileResponse
@@ -33,10 +40,11 @@ package "Indexer Service" {
         + send_available_languages(Empty): AvailableLanguages
     }
 
-    IndexerService -> "C# Indexer" : invokes
-    IndexerService -> "Rust Indexer" : invokes
-    IndexerService -> "Swift Indexer" : invokes
-    IndexerService -> "Java Indexer" : invokes
+    IndexerService -d-> "C++ Indexer" : invokes
+    IndexerService -d-> "C# Indexer" : invokes
+    IndexerService -d-> "Rust Indexer" : invokes
+    IndexerService -d-> "Swift Indexer" : invokes
+    IndexerService -d-> "Java Indexer" : invokes
 
     class CompileCommand {
         + source_code: String
@@ -60,13 +68,13 @@ package "Indexer Service" {
         + languages: List<String>
     }
 
-    class Empty {}
-
-    IndexerService ..> CompileCommand : Receives
-    IndexerService ..> CompileResponse : Returns
-    IndexerService ..> ProgressUpdate : Receives
-    IndexerService ..> ClassRelation : Streams
-    IndexerService ..> AvailableLanguages : Returns
+    IndexerService .u.> CompileCommand : Receives
+    IndexerService .u.> CompileResponse : Returns
+    IndexerService .u.> ProgressUpdate : Receives
+    IndexerService .u.> ClassRelation : Streams
+    IndexerService .u.> AvailableLanguages : Returns
+    
+    IndexerService --|> "C++ Indexer" : Checks Binary
     IndexerService --|> "C# Indexer" : Checks Binary
     IndexerService --|> "Rust Indexer" : Checks Binary
     IndexerService --|> "Swift Indexer" : Checks Binary
